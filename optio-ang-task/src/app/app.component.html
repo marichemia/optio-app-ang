@@ -1,6 +1,6 @@
 <mat-drawer-container class="example-container">
   <mat-drawer #drawer class="side-drawer" mode="side">
-    <p>Auto-resizing sidenav</p>
+    <app-add-edit-drawer></app-add-edit-drawer>
 
   </mat-drawer>
 
@@ -8,5 +8,6 @@
     <button type="button" mat-button (click)="drawer.toggle()">
       Toggle sidenav
     </button>
+    <app-banners-list></app-banners-list>
   </div>
 </mat-drawer-container>

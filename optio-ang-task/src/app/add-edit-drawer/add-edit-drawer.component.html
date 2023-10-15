@@ -1,0 +1,23 @@
+<input type="file" class="file-input" (change)="onFileSelected($event)" #fileUpload>
+
+
+<form [formGroup]="form">
+
+    <div class="file-upload">
+
+        {{fileName || "No file uploaded yet."}}
+
+        <button mat-mini-fab color="primary" class="upload-btn" (click)="fileUpload.click()">
+            <mat-icon>attach_file</mat-icon>
+        </button>
+    </div>
+
+    <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input type="string" matInput placeholder="Ex. Summer Deals Banner"
+            formControlName="this.form.controls['name']">
+        <mat-error *ngIf="this.form.controls['name'].hasError('required')">
+            Name is <strong>required</strong>
+        </mat-error>
+    </mat-form-field>
+</form>

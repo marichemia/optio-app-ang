@@ -10,11 +10,21 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AddEditDrawerComponent } from './add-edit-drawer/add-edit-drawer.component';
+import { BannersListComponent } from './banners-list/banners-list.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatToolbarModule } from '@angular/material/toolbar';
+
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AddEditDrawerComponent,
+    BannersListComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +34,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NgIf,
     MatButtonModule,
     BrowserAnimationsModule,
-
+    MatFormFieldModule,
+    MatToolbarModule,
+    MatInputModule,
+    MatIconModule,
+    ReactiveFormsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
