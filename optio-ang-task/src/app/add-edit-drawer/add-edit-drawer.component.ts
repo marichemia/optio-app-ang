@@ -76,7 +76,7 @@ export class AddEditDrawerComponent implements OnInit {
   }
 
   onSubmit() {
-
+    console.log(this.form.value);
   }
 
 }
