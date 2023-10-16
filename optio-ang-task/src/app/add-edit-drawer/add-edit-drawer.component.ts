@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ReferenceApiService } from '../core/services/reference-api.service';
 
 @Component({
   selector: 'app-add-edit-drawer',
@@ -12,26 +13,50 @@ export class AddEditDrawerComponent implements OnInit {
 
   form!: FormGroup;
   fileName: string | undefined = undefined;
-  emailFormControl = new FormControl('', [Validators.required, Validators.email]);
+  labelsArr: any;
+  zonesArr: any;
+  channelsArr: any;
+  languagesArr: any;
 
-  constructor(private _httpClient: HttpClient, private fb: FormBuilder,) { }
+  constructor(private _httpClient: HttpClient,
+    private fb: FormBuilder,
+    private refApiService: ReferenceApiService) { }
 
   ngOnInit() {
 
     this.form = this.fb.group({
       name: ['', [Validators.required]],
-      chanelId: ['', [Validators.required]],
+      channel: ['', [Validators.required]],
       language: ['', [Validators.required]],
-      zoneId: ['', [Validators.required]],
-      priority: ['', [Validators.required]],
+      zone: ['', [Validators.required]],
+      priority: ['', [Validators.required, Validators.pattern('^[1-9][0-9]*$')]],
       url: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/i)]],
       startDate: ['', Validators.required],
       endDate: '',
       active: ['true', [Validators.required]],
-      labels: ['', [Validators.required]],
+      labels: [''],
     });
 
+    //get reference data
+
+    this.refApiService.getData('1900').subscribe(res => {
+      this.labelsArr = res.data.entities;
+    });
+
+    this.refApiService.getData('1700').subscribe(res => {
+      this.zonesArr = res.data.entities;
+    });
+
+    this.refApiService.getData('1600').subscribe(res => {
+      this.channelsArr = res.data.entities;
+    });
+
+    this.refApiService.getData('2900').subscribe(res => {
+      this.languagesArr = res.data.entities;
+    });
   }
+
+
 
   onFileSelected(e: any) {
     const img: File = e.target.files[0];
@@ -48,6 +73,10 @@ export class AddEditDrawerComponent implements OnInit {
       return;
 
     }
+  }
+
+  onSubmit() {
+
   }
 
 }

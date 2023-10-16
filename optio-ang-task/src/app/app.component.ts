@@ -8,27 +8,10 @@ import { Observable } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   constructor(private http: HttpClient) { }
 
-  ngOnInit() {
 
-    this.getData().subscribe(data => {
-      console.log(data)
-    })
-
-
-
-  }
-
-  getData(): Observable<any> {
-
-    const data = {
-      typeId: "1900"
-    }
-
-    return this.http.post('https://development.api.optio.ai/api/v2/reference-data/find', data)
-  }
 }
 
 /*
