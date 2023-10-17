@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReferenceApiService } from '../core/services/reference-api.service';
+import { BlobResponse } from '../core/interfaces/blob-response.interface';
+import { keyframes } from '@angular/animations';
+import { SaveBanner, editedData } from '../core/interfaces/banner-save.interface';
 
 @Component({
   selector: 'app-add-edit-drawer',
@@ -17,6 +20,8 @@ export class AddEditDrawerComponent implements OnInit {
   zonesArr: any;
   channelsArr: any;
   languagesArr: any;
+  counter: number = 1;
+  file: string | undefined;
 
   constructor(private _httpClient: HttpClient,
     private fb: FormBuilder,
@@ -26,9 +31,9 @@ export class AddEditDrawerComponent implements OnInit {
 
     this.form = this.fb.group({
       name: ['', [Validators.required]],
-      channel: ['', [Validators.required]],
+      channelId: ['', [Validators.required]],
       language: ['', [Validators.required]],
-      zone: ['', [Validators.required]],
+      zoneId: ['', [Validators.required]],
       priority: ['', [Validators.required, Validators.pattern('^[1-9][0-9]*$')]],
       url: ['', [Validators.required, Validators.pattern(/^https?:\/\/.+/i)]],
       startDate: ['', Validators.required],
@@ -67,7 +72,10 @@ export class AddEditDrawerComponent implements OnInit {
       const formData = new FormData();
       formData.set('blob', img);
 
-      return this._httpClient.post('https://development.api.optio.ai/api/v2/blob/upload', formData).subscribe(res => console.log(res));
+      return this._httpClient.post<BlobResponse>('https://development.api.optio.ai/api/v2/blob/upload', formData).subscribe(res => {
+        console.log(res)
+        this.file = res.data.id;
+      });
     } else {
 
       return;
@@ -76,7 +84,38 @@ export class AddEditDrawerComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    if (this.file) {
+      //transform user input for POST request 
+
+      const editedData: editedData = {
+        channelId: this.form.controls['channelId'].value.id,
+        zoneId: this.form.controls['zoneId'].value.id,
+        fileId: this.file,
+        startDate: this.form.controls['startDate'].value.toISOString(),
+        language: this.form.controls['language'].value.key,
+      }
+
+      //apply changes
+
+      const data: SaveBanner = { ...this.form.value, ...editedData };
+
+      if (data.endDate) {
+        editedData.endDate = this.form.controls['endDate'].value.toISOString();
+      } else {
+        delete data.endDate;
+      }
+
+      if (!data.labels) {
+        delete data.labels;
+      }
+
+      //POST
+
+      this._httpClient.post('https://development.api.optio.ai/api/v2/banners/save', data).subscribe(res => console.log(res))
+    } else {
+      console.log('error, no file uploaded')
+    }
+
   }
 
 }

@@ -1,8 +1,31 @@
-.file-input {
-    display: none;
-}
+form {
 
-.example-additional-selection {
-    opacity: 0.75;
-    font-size: 0.75em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .form-field {
+        width: 80%;
+        margin-top: 20px;
+
+        mat-form-field {
+
+            width: 100%;
+
+
+            .example-additional-selection {
+                opacity: 0.75;
+                font-size: 0.75em;
+            }
+
+        }
+
+    }
+
+    .file-input {
+        display: none;
+    }
+
+
+
 }
