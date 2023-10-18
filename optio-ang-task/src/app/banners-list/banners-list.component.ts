@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BannersApiService } from '../core/services/banners-api.service';
 import { Banner } from '../core/interfaces/get-banners.interceptor';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,7 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./banners-list.component.scss'],
 
 })
-export class BannersListComponent implements OnInit {
+export class BannersListComponent implements OnInit, OnDestroy {
 
   banners: Banner[] = [];
   columnsToDisplay = ['name', 'active', 'zoneId', 'labels', 'startDate', 'endDate', 'img'];
@@ -41,13 +41,6 @@ export class BannersListComponent implements OnInit {
   loadPage() {
     console.log(this.totalBanners + 'inside loadPage')
     this.bannerApiService.getBanners(this.pageSize, this.pageIndex);
-    /*
-      this.bannerApiService.getBannersObservable(this.pageSize, this.pageIndex).subscribe(res => {
-        this.banners = res;
-      })
-  
-      this.bannerApiService.totalBannersObservable().subscribe(res => this.totalBanners = res);
-    */
   }
 
   onPageChange(e: PageEvent) {
@@ -55,6 +48,16 @@ export class BannersListComponent implements OnInit {
     this.pageIndex = e.pageIndex;
     this.pageSize = e.pageSize;
     this.loadPage();
+  }
+
+  ngOnDestroy() {
+    if (this.bannersSubscription) {
+      this.bannersSubscription.unsubscribe;
+    }
+
+    if (this.totalSubscription) {
+      this.totalSubscription.unsubscribe;
+    }
   }
 
 }
