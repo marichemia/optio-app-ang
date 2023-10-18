@@ -6,6 +6,7 @@ import { ReferenceApiService } from '../core/services/reference-api.service';
 import { BlobResponse } from '../core/interfaces/blob-response.interface';
 import { keyframes } from '@angular/animations';
 import { SaveBanner, editedData } from '../core/interfaces/banner-save.interface';
+import { BannersApiService } from '../core/services/banners-api.service';
 
 @Component({
   selector: 'app-add-edit-drawer',
@@ -25,7 +26,7 @@ export class AddEditDrawerComponent implements OnInit {
 
   constructor(private _httpClient: HttpClient,
     private fb: FormBuilder,
-    private refApiService: ReferenceApiService) { }
+    private refApiService: ReferenceApiService, private bannersService: BannersApiService) { }
 
   ngOnInit() {
 
@@ -112,6 +113,11 @@ export class AddEditDrawerComponent implements OnInit {
       //POST
 
       this._httpClient.post('https://development.api.optio.ai/api/v2/banners/save', data).subscribe(res => console.log(res))
+
+      //refresh
+
+      this.bannersService.getBanners();
+
     } else {
       console.log('error, no file uploaded')
     }

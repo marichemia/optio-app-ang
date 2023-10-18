@@ -7,3 +7,6 @@
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
 </table>
+
+<mat-paginator [pageIndex]="pageIndex" [pageSize]="pageSize" [length]="totalBanners" (page)="onPageChange($event)">
+</mat-paginator>

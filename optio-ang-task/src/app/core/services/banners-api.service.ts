@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Banner, GetBannersRes } from '../interfaces/get-banners.interceptor';
 
 @Injectable({
@@ -8,9 +8,19 @@ import { Banner, GetBannersRes } from '../interfaces/get-banners.interceptor';
 })
 export class BannersApiService {
 
+  private bannersSubject = new BehaviorSubject<Banner[]>([]);
+  private totalBanners = new BehaviorSubject<number>(0);
+
   constructor(private http: HttpClient) { }
 
-  getBanners(pageSize: number, pageIndex: number): Observable<any> {
+  getBannersObservable(pageSize?: number, pageIndex?: number): Observable<Banner[]> {
+    if (pageSize && pageIndex) {
+      this.getBanners(pageSize, pageIndex);
+    }
+    return this.bannersSubject.asObservable();
+  }
+
+  getBanners(pageSize?: number, pageIndex?: number) {
 
     const data = {
       includes: ["name", "channelId", "id", "active", "zoneId", "startDate", "endDate", "labels"],
@@ -18,6 +28,14 @@ export class BannersApiService {
       pageSize: pageSize
     }
 
-    return this.http.post('https://development.api.optio.ai/api/v2/banners/find', data);
+    this.http.post<any>('https://development.api.optio.ai/api/v2/banners/find', data).subscribe(res => {
+      this.bannersSubject.next(res.data.entities);
+      this.totalBanners.next(res.data.total);
+
+    });
+  }
+
+  totalBannersObservable(): Observable<number> {
+    return this.totalBanners.asObservable();
   }
 }
