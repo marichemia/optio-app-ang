@@ -4,8 +4,15 @@
         <td mat-cell *matCellDef="let banner">{{banner[column]}}</td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+    <ng-container matColumnDef="imageUrl">
+        <th mat-header-cell *matHeaderCellDef> Image </th>
+        <td mat-cell *matCellDef="let banner">
+            <img [src]="banner.imageUrl" alt="Banner Image" width="100">
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay.concat('imageUrl')"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay.concat('imageUrl');"></tr>
 </table>
 
 <mat-paginator [pageIndex]="pageIndex" [pageSize]="pageSize" [length]="totalBanners" (page)="onPageChange($event)">

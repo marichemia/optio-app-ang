@@ -23,7 +23,7 @@ export class BannersApiService {
   getBanners(pageSize?: number, pageIndex?: number) {
 
     const data = {
-      includes: ["name", "channelId", "id", "active", "zoneId", "startDate", "endDate", "labels"],
+      includes: ["name", "channelId", "id", "active", "zoneId", "startDate", "endDate", "labels", "fileId"],
       pageIndex: pageIndex,
       pageSize: pageSize
     }

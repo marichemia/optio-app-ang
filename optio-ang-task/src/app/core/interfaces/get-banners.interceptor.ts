@@ -16,6 +16,7 @@ export interface Banner {
     labels: string[],
     createdBy?: string,
     modifiedBy?: string,
+    imageUrl?: string
 }
 
 export interface GetBannersRes {
