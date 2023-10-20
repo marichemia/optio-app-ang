@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, combineLatest, forkJoin } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -27,6 +27,8 @@ export class AddEditDrawerComponent implements OnInit {
   file: string | undefined;
   currentBanner!: Banner;
   isEditMode: boolean | undefined;
+  formReset: boolean = false;
+  @Output() resetFormEvent = new EventEmitter<void>();
 
   constructor(private _httpClient: HttpClient,
     private fb: FormBuilder,
@@ -68,6 +70,16 @@ export class AddEditDrawerComponent implements OnInit {
       this.languagesArr = res.data.entities;
     });
 
+    //subscribe to form reset observable
+
+    this.sharedService.resetForm.subscribe(res => {
+
+      if (res) {
+        this.form.reset();
+      }
+
+    })
+
 
 
     //subscribe to selected user and isEditMode
@@ -77,7 +89,6 @@ export class AddEditDrawerComponent implements OnInit {
       this.isEditMode = isEditMode;
       console.log(currentBanner, isEditMode)
       if (isEditMode && currentBanner) {
-        console.log(currentBanner)
         this.form.controls['name'].setValue(currentBanner.name);
         this.form.controls['channelId'].setValue(currentBanner.channelId);
         this.form.controls['language'].setValue(currentBanner.language);
@@ -99,7 +110,9 @@ export class AddEditDrawerComponent implements OnInit {
 
   }
 
-
+  onResetForm() {
+    this.form.reset();
+  }
 
   onFileSelected(e: any) {
     const img: File = e.target.files[0];
@@ -122,7 +135,6 @@ export class AddEditDrawerComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.languagesArr, this.zonesArr)
 
     let data: SaveBanner;
 

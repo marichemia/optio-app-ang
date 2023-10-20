@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SharedService } from './shared/shared.service';
+import { MatDrawer } from '@angular/material/sidenav';
 
 
 @Component({
@@ -9,11 +10,34 @@ import { SharedService } from './shared/shared.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  subscription!: Subscription;
+  @ViewChild('drawer') drawer!: MatDrawer;
+  @Output() resetFormEvent = new EventEmitter<void>();
+
   constructor(private sharedService: SharedService) { }
 
-  onCreate() {
+  onClick() {
     this.sharedService.changeBanner(false);
+    this.resetFormEvent.emit();
+    this.sharedService.setResetForm(true);
   }
+
+  ngOnInit(): void {
+    this.subscription = this.sharedService.drawerCommand.subscribe(
+      res => {
+        if (res === 'toggle') {
+          this.drawer.toggle();
+        }
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+
 
 }

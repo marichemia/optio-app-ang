@@ -68,6 +68,7 @@ export class BannersListComponent implements OnInit, OnDestroy {
   editBanner(row: Banner) {
     this.bannerApiService.getBanner(row.id!);
     this.sharedService.changeBanner(true, row);
+    this.sharedService.toggleDrawer();
   }
 
   ngOnDestroy() {

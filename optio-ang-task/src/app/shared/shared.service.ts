@@ -11,6 +11,10 @@ export class SharedService {
   currentBanner = this.bannerSource.asObservable();
   private isEditModeSource = new Subject<boolean>;
   isEditMode = this.isEditModeSource.asObservable();
+  private drawerCommandSource = new Subject<string>();
+  drawerCommand = this.drawerCommandSource.asObservable();
+  private resetFormSource = new Subject<boolean>;
+  resetForm = this.resetFormSource.asObservable();
 
   constructor() { }
 
@@ -19,7 +23,19 @@ export class SharedService {
     this.isEditModeSource.next(isEditMode);
   }
 
-  editMode(status: boolean) {
+  openDrawer() {
+    this.drawerCommandSource.next('open');
+  }
 
+  closeDrawer() {
+    this.drawerCommandSource.next('close');
+  }
+
+  toggleDrawer() {
+    this.drawerCommandSource.next('toggle');
+  }
+
+  setResetForm(bool: boolean) {
+    this.resetFormSource.next(bool);
   }
 }
