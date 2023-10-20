@@ -23,7 +23,7 @@ export class AddEditDrawerComponent implements OnInit {
   zonesArr: any;
   channelsArr: any;
   languagesArr: any;
-  counter: number = 1;
+  //counter: number = 1;
   file: string | undefined;
   currentBanner!: Banner;
   isEditMode: boolean | undefined;
@@ -85,7 +85,7 @@ export class AddEditDrawerComponent implements OnInit {
         this.form.controls['active'].setValue(currentBanner.active ? 'true' : 'false');
         this.form.controls['labels'].setValue(currentBanner.labels);
 
-        //this.sharedService.editMode(false);
+        this.file = currentBanner.fileId;
 
       }
     });
@@ -118,7 +118,16 @@ export class AddEditDrawerComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.file) {
+
+    let data: SaveBanner;
+
+    if (this.isEditMode) {
+
+      data = { ...this.form.value, ...{ id: this.currentBanner.id, fileId: this.file } }
+
+      this._httpClient.post('https://development.api.optio.ai/api/v2/banners/save', data).subscribe(res => console.log(res))
+
+    } else if (this.file) {
       //transform user input for POST request 
 
       const editedData: editedData = {
@@ -131,7 +140,7 @@ export class AddEditDrawerComponent implements OnInit {
 
       //apply changes
 
-      const data: SaveBanner = { ...this.form.value, ...editedData };
+      data = { ...this.form.value, ...editedData };
 
       if (data.endDate) {
         editedData.endDate = this.form.controls['endDate'].value.toISOString();
@@ -152,8 +161,10 @@ export class AddEditDrawerComponent implements OnInit {
       this.bannersService.getBanners();
 
     } else {
-      console.log('error, no file uploaded')
+      alert('please upload a file')
     }
+
+
 
   }
 

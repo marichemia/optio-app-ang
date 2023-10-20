@@ -46,7 +46,7 @@
                 <mat-select-trigger>
                     {{form.get('channelId')?.value.name || ''}}
                 </mat-select-trigger>
-                <mat-option *ngFor="let channel of channelsArr" [value]="channel">{{channel.name}}</mat-option>
+                <mat-option *ngFor="let channel of channelsArr" [value]="channel.key">{{channel.name}}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
@@ -59,7 +59,7 @@
                 <mat-select-trigger>
                     {{form.get('zoneId')?.value.name || ''}}
                 </mat-select-trigger>
-                <mat-option *ngFor="let zone of zonesArr" [value]="zone">{{zone.name}}</mat-option>
+                <mat-option *ngFor="let zone of zonesArr" [value]="zone.key">{{zone.name}}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
@@ -72,7 +72,7 @@
                 <mat-select-trigger>
                     {{form.get('language')?.value || ''}}
                 </mat-select-trigger>
-                <mat-option *ngFor="let language of languagesArr" [value]="language">{{language.name}}</mat-option>
+                <mat-option *ngFor="let language of languagesArr" [value]="language.key">{{language.name}}</mat-option>
             </mat-select>
         </mat-form-field>
     </div>
