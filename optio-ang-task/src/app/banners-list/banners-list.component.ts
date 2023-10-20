@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BannersApiService } from '../core/services/banners-api.service';
-import { Banner } from '../core/interfaces/get-banners.interceptor';
+import { Banner } from '../core/interfaces/get-banners.interface';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { GetImageService } from '../core/services/get-image.service';
 import { SharedService } from '../shared/shared.service';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-banners-list',
@@ -74,6 +75,16 @@ export class BannersListComponent implements OnInit, OnDestroy {
   onDelete(event: Event, id: string) {
     event.stopPropagation();
     this.bannerApiService.removeBanner(id).subscribe(res => console.log(res))
+  }
+
+  sortData(sort: Sort) {
+
+    console.log(sort)
+
+    this.bannerApiService.getBanners(20, 0, sort.active, sort.direction);
+
+    this.bannerApiService.getBannersObservable().subscribe(res => console.log(res));
+
   }
 
   ngOnDestroy() {

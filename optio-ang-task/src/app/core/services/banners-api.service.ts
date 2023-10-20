@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { Banner, GetBannersRes } from '../interfaces/get-banners.interceptor';
+import { Banner, GetBannersRes } from '../interfaces/get-banners.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +21,22 @@ export class BannersApiService {
     return this.bannersSubject.asObservable();
   }
 
-  getBanners(pageSize?: number, pageIndex?: number) {
+  getBanners(pageSize?: number, pageIndex?: number, sortByStr?: string, sortDirectionStr?: string) {
 
-    const data = {
+    let data = {
       includes: ["name", "channelId", "id", "active", "zoneId", "startDate", "endDate", "labels", "fileId"],
       pageIndex: pageIndex,
       pageSize: pageSize
+    }
+
+
+    const sortData = {
+      sortBy: `${sortByStr === 'name' || sortByStr === 'url' ? `${sortByStr}.raw` : sortByStr}`,
+      sortDirection: sortDirectionStr
+    }
+
+    if (sortByStr && sortDirectionStr) {
+      data = { ...data, ...sortData }
     }
 
     this.http.post<any>('https://development.api.optio.ai/api/v2/banners/find', data).subscribe(res => {

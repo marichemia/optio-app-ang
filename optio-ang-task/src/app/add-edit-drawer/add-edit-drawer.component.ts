@@ -8,7 +8,8 @@ import { keyframes } from '@angular/animations';
 import { SaveBanner, editedData } from '../core/interfaces/banner-save.interface';
 import { BannersApiService } from '../core/services/banners-api.service';
 import { SharedService } from '../shared/shared.service';
-import { Banner } from '../core/interfaces/get-banners.interceptor';
+import { Banner } from '../core/interfaces/get-banners.interface';
+
 
 @Component({
   selector: 'app-add-edit-drawer',
@@ -23,12 +24,10 @@ export class AddEditDrawerComponent implements OnInit {
   zonesArr: any;
   channelsArr: any;
   languagesArr: any;
-  //counter: number = 1;
   file: string | undefined;
   currentBanner!: Banner;
   isEditMode: boolean | undefined;
   formReset: boolean = false;
-  @Output() resetFormEvent = new EventEmitter<void>();
 
   constructor(private _httpClient: HttpClient,
     private fb: FormBuilder,
@@ -126,6 +125,9 @@ export class AddEditDrawerComponent implements OnInit {
       return this._httpClient.post<BlobResponse>('https://development.api.optio.ai/api/v2/blob/upload', formData).subscribe(res => {
         console.log(res)
         this.file = res.data.id;
+        if (res.success) {
+          alert('file upload unsuccessful')
+        }
       });
     } else {
 
