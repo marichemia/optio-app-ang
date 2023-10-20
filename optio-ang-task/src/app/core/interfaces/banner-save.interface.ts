@@ -14,12 +14,8 @@ export interface SaveBanner {
 }
 
 export interface editedData {
-    id?: string,
-    channelId: string,
-    zoneId: string,
     fileId: string,
     startDate: string,
     endDate?: string,
-    language: string,
     labels?: string,
 }

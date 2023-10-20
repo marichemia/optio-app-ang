@@ -35,6 +35,8 @@ export class AddEditDrawerComponent implements OnInit {
 
   ngOnInit() {
 
+
+
     this.form = this.fb.group({
       name: ['', [Validators.required]],
       channelId: ['', [Validators.required]],
@@ -65,6 +67,8 @@ export class AddEditDrawerComponent implements OnInit {
     this.refApiService.getData('2900').subscribe(res => {
       this.languagesArr = res.data.entities;
     });
+
+
 
     //subscribe to selected user and isEditMode
 
@@ -118,24 +122,29 @@ export class AddEditDrawerComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.languagesArr, this.zonesArr)
 
     let data: SaveBanner;
 
-    if (this.isEditMode) {
+    if (this.isEditMode && this.file) {
 
-      data = { ...this.form.value, ...{ id: this.currentBanner.id, fileId: this.file } }
+      //add id and file id to the edited form value
+
+      data = { ...{ id: this.currentBanner.id, fileId: this.file, ...this.form.value, } }
+
+      //POST
 
       this._httpClient.post('https://development.api.optio.ai/api/v2/banners/save', data).subscribe(res => console.log(res))
 
     } else if (this.file) {
+
       //transform user input for POST request 
 
       const editedData: editedData = {
-        channelId: this.form.controls['channelId'].value.name,
-        zoneId: this.form.controls['zoneId'].value.name,
+
         fileId: this.file,
         startDate: this.form.controls['startDate'].value.toISOString(),
-        language: this.form.controls['language'].value.key,
+
       }
 
       //apply changes
@@ -153,7 +162,7 @@ export class AddEditDrawerComponent implements OnInit {
       }
 
       //POST
-
+      console.log(data)
       this._httpClient.post('https://development.api.optio.ai/api/v2/banners/save', data).subscribe(res => console.log(res))
 
       //refresh
