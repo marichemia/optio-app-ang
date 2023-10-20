@@ -70,7 +70,7 @@
             <mat-label>Language</mat-label>
             <mat-select formControlName="language">
                 <mat-select-trigger>
-                    {{form.get('language')?.value.name || ''}}
+                    {{form.get('language')?.value || ''}}
                 </mat-select-trigger>
                 <mat-option *ngFor="let language of languagesArr" [value]="language">{{language.name}}</mat-option>
             </mat-select>

@@ -4,6 +4,7 @@ import { Banner } from '../core/interfaces/get-banners.interceptor';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { GetImageService } from '../core/services/get-image.service';
+import { SharedService } from '../shared/shared.service';
 
 @Component({
   selector: 'app-banners-list',
@@ -21,7 +22,7 @@ export class BannersListComponent implements OnInit, OnDestroy {
   totalSubscription: Subscription | undefined;
   imageSrc?: string;
 
-  constructor(private bannerApiService: BannersApiService, private getImageService: GetImageService) { }
+  constructor(private bannerApiService: BannersApiService, private getImageService: GetImageService, private sharedService: SharedService) { }
 
   ngOnInit() {
     this.bannerApiService.getBanners(20, 0);
@@ -30,11 +31,9 @@ export class BannersListComponent implements OnInit, OnDestroy {
     this.bannersSubscription = this.bannerApiService.getBannersObservable().subscribe(banners => {
 
       banners.forEach(banner => {
-        console.log(banner)
         this.getImageService.getBlob(banner.fileId!, 'inline').subscribe(res => {
           const url = window.URL.createObjectURL(res);
           banner.imageUrl = url;
-          console.log(banner.imageUrl)
         });
       });
 
@@ -64,6 +63,11 @@ export class BannersListComponent implements OnInit, OnDestroy {
       const url = window.URL.createObjectURL(res);
       return url
     })
+  }
+
+  editBanner(row: Banner) {
+    this.bannerApiService.getBanner(row.id!);
+    this.sharedService.changeBanner(true, row);
   }
 
   ngOnDestroy() {

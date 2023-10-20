@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
+import { SharedService } from './shared/shared.service';
 
 
 @Component({
@@ -9,18 +10,10 @@ import { Observable } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(private http: HttpClient) { }
+  constructor(private sharedService: SharedService) { }
 
+  onCreate() {
+    this.sharedService.changeBanner(false);
+  }
 
 }
-
-/*
-const url = 'https://development.api.optio.ai/api/v2/reference-data/find';
-    const data = {
-      key1: 'value1',
-      key2: 'value2'
-      // add more data as needed
-    };
-
-    return this.http.post(url, data);
-*/

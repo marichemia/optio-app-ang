@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { Banner, GetBannersRes } from '../interfaces/get-banners.interceptor';
 
 @Injectable({
@@ -10,6 +10,7 @@ export class BannersApiService {
 
   private bannersSubject = new BehaviorSubject<Banner[]>([]);
   private totalBanners = new BehaviorSubject<number>(0);
+  private findBanner = new Subject<Banner>;
 
   constructor(private http: HttpClient) { }
 
@@ -38,4 +39,14 @@ export class BannersApiService {
   totalBannersObservable(): Observable<number> {
     return this.totalBanners.asObservable();
   }
+
+  getBanner(bannerId: string) {
+    this.http.post<any>('https://development.api.optio.ai/api/v2/banners/find-one', { id: bannerId }).subscribe(res => this.findBanner.next(res.data));
+  }
+
+  getBannerObservable(): Observable<Banner> {
+    return this.findBanner.asObservable();
+  }
+
+
 }

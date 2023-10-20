@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, forkJoin } from 'rxjs';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReferenceApiService } from '../core/services/reference-api.service';
 import { BlobResponse } from '../core/interfaces/blob-response.interface';
 import { keyframes } from '@angular/animations';
 import { SaveBanner, editedData } from '../core/interfaces/banner-save.interface';
 import { BannersApiService } from '../core/services/banners-api.service';
+import { SharedService } from '../shared/shared.service';
+import { Banner } from '../core/interfaces/get-banners.interceptor';
 
 @Component({
   selector: 'app-add-edit-drawer',
@@ -23,10 +25,13 @@ export class AddEditDrawerComponent implements OnInit {
   languagesArr: any;
   counter: number = 1;
   file: string | undefined;
+  currentBanner!: Banner;
+  isEditMode: boolean | undefined;
 
   constructor(private _httpClient: HttpClient,
     private fb: FormBuilder,
-    private refApiService: ReferenceApiService, private bannersService: BannersApiService) { }
+    private refApiService: ReferenceApiService, private bannersService: BannersApiService,
+    private sharedService: SharedService) { }
 
   ngOnInit() {
 
@@ -60,6 +65,34 @@ export class AddEditDrawerComponent implements OnInit {
     this.refApiService.getData('2900').subscribe(res => {
       this.languagesArr = res.data.entities;
     });
+
+    //subscribe to selected user and isEditMode
+
+    combineLatest([this.bannersService.getBannerObservable(), this.sharedService.isEditMode]).subscribe(([currentBanner, isEditMode]) => {
+      this.currentBanner = currentBanner;
+      this.isEditMode = isEditMode;
+      console.log(currentBanner, isEditMode)
+      if (isEditMode && currentBanner) {
+        console.log(currentBanner)
+        this.form.controls['name'].setValue(currentBanner.name);
+        this.form.controls['channelId'].setValue(currentBanner.channelId);
+        this.form.controls['language'].setValue(currentBanner.language);
+        this.form.controls['zoneId'].setValue(currentBanner.zoneId);
+        this.form.controls['priority'].setValue(currentBanner.priority);
+        this.form.controls['url'].setValue(currentBanner.url);
+        this.form.controls['startDate'].setValue(currentBanner.startDate);
+        this.form.controls['endDate'].setValue(currentBanner.endDate);
+        this.form.controls['active'].setValue(currentBanner.active ? 'true' : 'false');
+        this.form.controls['labels'].setValue(currentBanner.labels);
+
+        //this.sharedService.editMode(false);
+
+      }
+    });
+
+
+
+
   }
 
 
@@ -89,8 +122,8 @@ export class AddEditDrawerComponent implements OnInit {
       //transform user input for POST request 
 
       const editedData: editedData = {
-        channelId: this.form.controls['channelId'].value.id,
-        zoneId: this.form.controls['zoneId'].value.id,
+        channelId: this.form.controls['channelId'].value.name,
+        zoneId: this.form.controls['zoneId'].value.name,
         fileId: this.file,
         startDate: this.form.controls['startDate'].value.toISOString(),
         language: this.form.controls['language'].value.key,
