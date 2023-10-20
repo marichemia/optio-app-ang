@@ -48,5 +48,9 @@ export class BannersApiService {
     return this.findBanner.asObservable();
   }
 
+  removeBanner(bannerId: string): Observable<any> {
+    return this.http.post('https://development.api.optio.ai/api/v2/banners/remove', { id: bannerId });
+  }
+
 
 }

@@ -71,6 +71,11 @@ export class BannersListComponent implements OnInit, OnDestroy {
     this.sharedService.toggleDrawer();
   }
 
+  onDelete(event: Event, id: string) {
+    event.stopPropagation();
+    this.bannerApiService.removeBanner(id).subscribe(res => console.log(res))
+  }
+
   ngOnDestroy() {
     if (this.bannersSubscription) {
       this.bannersSubscription.unsubscribe;
